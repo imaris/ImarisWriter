@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-#windows only
 set (CMAKE_SYSTEM_VERSION 8.1 CACHE TYPE INTERNAL FORCE)
 
 project(ImarisWriter)
 
-#cmake_policy(SET CMP0074 NEW)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0") 
+    cmake_policy(SET CMP0074 NEW)
+endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS TRUE)
 
