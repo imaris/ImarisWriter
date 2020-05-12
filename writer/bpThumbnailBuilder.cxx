@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "bpThumbnailBuilder.h"
 
+#include <algorithm>
+
 
 bpSize bpComputeThumbnailIndexR(bpSize aThumbnailSizeXY, const std::vector<bpVec3>& aImageResolutionSizes)
 {

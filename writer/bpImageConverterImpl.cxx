@@ -351,7 +351,7 @@ void bpImageConverterImpl<TDataType>::CopyFileBlockToImage(const tSize5D& aFileB
             TDataType* vPtr = vBuffer + ((!vIsFlippedY ? vIndexY : vSizeY - vIndexY - 1) * vSizeX);
             if (!vIsFlippedX) {
               if (vStepX == 1) {
-                std::memcpy(vPtr, vSource, vSizeX * sizeof(TDataType));
+                std::copy(vSource, vSource + vSizeX, vPtr);
               }
               else {
                 for (bpSize vIndexX = 0; vIndexX < vSizeX; ++vIndexX) {

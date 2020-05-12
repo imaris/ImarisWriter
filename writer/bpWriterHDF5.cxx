@@ -19,6 +19,8 @@
 
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
+#include <limits>
 
 static const bpString mDataSetDirectoryName = "DataSet";
 static const bpString mDataSetTimesDirectoryName = "DataSetTimes";
