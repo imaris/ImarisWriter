@@ -16,7 +16,6 @@ High-performance image writer library.
   mkdir release
   cd release
   cmake -DHDF5_ROOT:PATH="<libs>/hdf5" -DZLIB_ROOT:PATH="<libs>/zlib" -DLZ4_ROOT:PATH="<libs>/lz4" ..
-  make
   ```
 
 - Debug
@@ -25,6 +24,6 @@ High-performance image writer library.
   mkdir debug
   cd debug
   cmake -DHDF5_ROOT:PATH="<libs>/hdf5" -DZLIB_ROOT:PATH="<libs>/zlib" -DLZ4_ROOT:PATH="<libs>/lz4" -DCMAKE_BUILD_TYPE=Debug ..
-  make
   ```
   
+On Windows, the generated solution files can be opened and compiled with Visual Studio, while on Linux and Mac the generated Makefile can be compiled with ```make```.
