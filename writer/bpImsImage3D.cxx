@@ -196,7 +196,7 @@ void bpImsImage3D<TDataType>::RegionToMemOperation(bpSize aIndexZ, const bpVec2&
       bpSize vBlockRegionSizeX = vBlockEndOffsetX - vBlockBeginOffsetX;
       bpSize vOffsetZ = vBlockBeginOffsetZ;
 
-      if (vBlockBeginOffsetX == 0 && vBlockRegionSizeX == mMemoryBlockSizeX) {
+      if (vBlockBeginOffsetX == 0 && vRegionSizeX == mMemoryBlockSizeX) {
 
         bpSize vBlockBeginOffset = vOffsetZ * vBlockSizeXY + vBlockBeginOffsetY * vBlockSizeX + vBlockBeginOffsetX;
         bpSize vBlockRegionSizeXY = vBlockRegionSizeX * (vBlockEndOffsetY - vBlockBeginOffsetY);
