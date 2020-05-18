@@ -83,13 +83,7 @@ bpMultiresolutionImsImage<TDataType>::~bpMultiresolutionImsImage()
 
 
 template<typename TDataType>
-void bpMultiresolutionImsImage<TDataType>::FinishWriting(
-  const bpString& aApplicationName,
-  const bpString& aApplicationVersion,
-  const bpConverterTypes::cImageExtent& aImageExtent,
-  const bpConverterTypes::tParameters& aParameters,
-  const bpConverterTypes::tTimeInfoVector& aTimeInfoPerTimePoint,
-  const bpConverterTypes::tColorInfoVector& aColorInfoPerChannel)
+void bpMultiresolutionImsImage<TDataType>::FinishWriteDataBlocks()
 {
   mComputeThread->WaitAll();
   for (const auto& vThread : mHistogramThreads) {
@@ -119,6 +113,17 @@ void bpMultiresolutionImsImage<TDataType>::FinishWriting(
   }
 
   mWriter->FinishWriteDataBlocks();
+}
+
+template<typename TDataType>
+void bpMultiresolutionImsImage<TDataType>::WriteMetadata(
+  const bpString& aApplicationName,
+  const bpString& aApplicationVersion,
+  const bpConverterTypes::cImageExtent& aImageExtent,
+  const bpConverterTypes::tParameters& aParameters,
+  const bpConverterTypes::tTimeInfoVector& aTimeInfoPerTimePoint,
+  const bpConverterTypes::tColorInfoVector& aColorInfoPerChannel)
+{
   mWriter->WriteMetadata(aApplicationName, aApplicationVersion, aImageExtent, aParameters, aTimeInfoPerTimePoint, aColorInfoPerChannel);
   mWriter->WriteThumbnail(mThumbnailBuilder->CreateThumbnail(aColorInfoPerChannel, aImageExtent));
 }
@@ -355,7 +360,7 @@ void bpMultiresolutionImsImage<TDataType>::OnCopiedDataImpl(bpSize aIndexT, bpSi
           AddHistogramValues(vImage3D, vHigherResBlockIndex, vData);
         }
 
-        mWriter->StartWriteDataBlock(vData, vMemoryBlockIndexX, vMemoryBlockIndexY, vMemoryBlockIndexZ, aIndexT, aIndexC, aIndexR, vResample);
+        mWriter->StartWriteDataBlock(vData, vMemoryBlockIndexX, vMemoryBlockIndexY, vMemoryBlockIndexZ, aIndexT, aIndexC, aIndexR, std::move(vResample));
         mThumbnailBuilder->StartCopyDataBlock(vData, vMemoryBlockIndexX, vMemoryBlockIndexY, vMemoryBlockIndexZ, aIndexT, aIndexC, aIndexR);
       }
     }
@@ -666,13 +671,6 @@ void bpMultiresolutionImsImage<TDataType>::AddHistogramValues(bpImsImage3D<TData
       }
     }
   }
-}
-
-
-template<typename TDataType>
-void bpMultiresolutionImsImage<TDataType>::SetWriter(bpSharedPtr<bpWriter> aWriter)
-{
-  mWriter = aWriter;
 }
 
 

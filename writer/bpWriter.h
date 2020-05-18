@@ -52,7 +52,10 @@ public:
     bpSize aBlockIndexX, bpSize aBlockIndexY, bpSize aBlockIndexZ,
     bpSize aIndexT, bpSize aIndexC, bpSize aIndexR, tPreFunction aPreFunction)
   {
-    aPreFunction();
+    if (aPreFunction) {
+      aPreFunction();
+    }
+
     WriteDataBlock(aData.GetData(), aData.GetSize(), aBlockIndexX, aBlockIndexY, aBlockIndexZ, aIndexT, aIndexC, aIndexR);
   }
 

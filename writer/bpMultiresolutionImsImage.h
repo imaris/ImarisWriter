@@ -50,9 +50,9 @@ public:
 
   void CopyData(bpSize aIndexT, bpSize aIndexC, bpSize aIndexZ, const bpVec2& aBlockIndexXY, const TDataType* aDataBlockXY, bpSize aIndexR = 0);
 
-  void SetWriter(bpSharedPtr<bpWriter> aWriter);
+  void FinishWriteDataBlocks();
 
-  void FinishWriting(
+  void WriteMetadata(
     const bpString& aApplicationName,
     const bpString& aApplicationVersion,
     const bpConverterTypes::cImageExtent& aImageExtent,

@@ -127,11 +127,12 @@ void bpImageConverterImpl<TDataType>::Finish(
   const tColorInfoVector& aColorInfoPerChannel,
   bool aAutoAdjustColorRange)
 {
+  mMultiresolutionImage.FinishWriteDataBlocks();
   tColorInfoVector vColorInfoPerChannel(aColorInfoPerChannel);
   if (aAutoAdjustColorRange) {
     AdjustColorRange(vColorInfoPerChannel);
   }
-  mMultiresolutionImage.FinishWriting(mApplicationName, mApplicationVersion, aImageExtent, aParameters, aTimeInfoPerTimePoint, vColorInfoPerChannel);
+  mMultiresolutionImage.WriteMetadata(mApplicationName, mApplicationVersion, aImageExtent, aParameters, aTimeInfoPerTimePoint, vColorInfoPerChannel);
 }
 
 
@@ -305,8 +306,8 @@ void bpImageConverterImpl<TDataType>::CopyFileBlockToImage(const tSize5D& aFileB
 
   bpSize vDimWeightX = vDimWeight[vDimX];
   bpSize vDimWeightY = vDimWeight[vDimY];
-  bpSize vStepX = vMemSample[vDimX] * vDimWeightX;
-  bpSize vStepY = vMemSample[vDimY] * vDimWeightY;
+  bpSize vStepX = vMemSample[0] * vDimWeightX;
+  bpSize vStepY = vMemSample[1] * vDimWeightY;
 
   bpSize vSizeX = vEndX - vBeginX;
   bpSize vSizeY = vEndY - vBeginY;
