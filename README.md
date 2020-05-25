@@ -26,4 +26,4 @@ High-performance image writer library.
   cmake -DHDF5_ROOT:PATH="<libs>/hdf5" -DZLIB_ROOT:PATH="<libs>/zlib" -DLZ4_ROOT:PATH="<libs>/lz4" -DCMAKE_BUILD_TYPE=Debug ..
   ```
   
-On Windows, the generated solution files can be opened and compiled with Visual Studio, while on Linux and Mac the generated Makefile can be compiled with ```make```.
+On Windows, the generated solution files can be opened and compiled with Visual Studio, while on Linux and Mac the generated Makefile can be compiled with ```make```. The Visual Studio version should be specified according to the setup of the other libraries, e.g. adding ```-G "Visual Studio 14 Win64"```.
