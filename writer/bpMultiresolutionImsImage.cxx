@@ -82,6 +82,18 @@ bpMultiresolutionImsImage<TDataType>::~bpMultiresolutionImsImage()
 }
 
 
+static bool IsEmpty(const bpHistogram& aHistogram)
+{
+  bpSize vSize = aHistogram.GetNumberOfBins();
+  for (bpSize vIndex = 0; vIndex < vSize; vIndex++) {
+    if (aHistogram.GetCount(vIndex) > 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
 template<typename TDataType>
 void bpMultiresolutionImsImage<TDataType>::FinishWriteDataBlocks()
 {
@@ -98,11 +110,17 @@ void bpMultiresolutionImsImage<TDataType>::FinishWriteDataBlocks()
       for (bpSize vIndexC = 0; vIndexC < vSizeC; ++vIndexC) {
         if (!mHistogramThreads.empty()) {
           mHistogramThreads[(vIndexT + vSizeT * vIndexC) % mHistogramThreads.size()]->Run([this, vIndexT, vIndexC, vIndexR] {
-            mWriter->WriteHistogram(mImages[vIndexR].GetImage3D(vIndexT, vIndexC).GetHistogram(1024), vIndexT, vIndexC, vIndexR);
+            bpHistogram vHistogram = mImages[vIndexR].GetImage3D(vIndexT, vIndexC).GetHistogram(1024);
+            if (!IsEmpty(vHistogram)) {
+              mWriter->WriteHistogram(vHistogram, vIndexT, vIndexC, vIndexR);
+            }
           });
         }
         else {
-          mWriter->WriteHistogram(mImages[vIndexR].GetImage3D(vIndexT, vIndexC).GetHistogram(1024), vIndexT, vIndexC, vIndexR);
+          bpHistogram vHistogram = mImages[vIndexR].GetImage3D(vIndexT, vIndexC).GetHistogram(1024);
+          if (!IsEmpty(vHistogram)) {
+            mWriter->WriteHistogram(vHistogram, vIndexT, vIndexC, vIndexR);
+          }
         }
       }
     }
