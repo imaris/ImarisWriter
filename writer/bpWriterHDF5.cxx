@@ -81,7 +81,6 @@ static bool bpStartsWith(const bpString& aString, const bpString& aPrefix)
 }
 
 
-
 static bpString bpFloatToString(bpFloat aValue, bpInt16 aFixedPrecision = 3)
 {
   std::ostringstream vOStringStream;
@@ -603,12 +602,12 @@ void bpWriterHDF5::UpdateImageMetadata(
   bpFloatVec3 vExtentMax{ aImageExtent.mExtentMaxX, aImageExtent.mExtentMaxY, aImageExtent.mExtentMaxZ };
   AdaptExtents(vExtentMin, vExtentMax, mImageLayout.GetImageSize(0));
 
-  vImageParameters["ExtMin0"] = bpFloatToString(vExtentMin[0], -1);
-  vImageParameters["ExtMin1"] = bpFloatToString(vExtentMin[1], -1);
-  vImageParameters["ExtMin2"] = bpFloatToString(vExtentMin[2], -1);
-  vImageParameters["ExtMax0"] = bpFloatToString(vExtentMax[0], -1);
-  vImageParameters["ExtMax1"] = bpFloatToString(vExtentMax[1], -1);
-  vImageParameters["ExtMax2"] = bpFloatToString(vExtentMax[2], -1);
+  vImageParameters["ExtMin0"] = bpFloatToString(vExtentMin[0], 9);
+  vImageParameters["ExtMin1"] = bpFloatToString(vExtentMin[1], 9);
+  vImageParameters["ExtMin2"] = bpFloatToString(vExtentMin[2], 9);
+  vImageParameters["ExtMax0"] = bpFloatToString(vExtentMax[0], 9);
+  vImageParameters["ExtMax1"] = bpFloatToString(vExtentMax[1], 9);
+  vImageParameters["ExtMax2"] = bpFloatToString(vExtentMax[2], 9);
 
   bpVec3 vImageSize = mImageLayout.GetImageSize(0);
   vImageParameters["X"] = bpImsUtils::bpToString(vImageSize[0]);
