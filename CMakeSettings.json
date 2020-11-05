@@ -1,0 +1,65 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "HDF5_ROOT",
+          "value": "C:\\Users\\kittisopikulm\\source\\repos\\hdf5-1.12.0\\out\\install\\x64-Debug",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_ROOT",
+          "value": "C:\\Users\\kittisopikulm\\source\\repos\\zlib-1.2.11\\out\\build\\x64-Debug (default)",
+          "type": "PATH"
+        },
+        {
+          "name": "LZ4_ROOT",
+          "value": "C:\\Users\\kittisopikulm\\source\\repos\\lz4\\visual\\VS2010\\bin\\x64_Debug",
+          "type": "PATH"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "HDF5_ROOT",
+          "value": "C:/Users/kittisopikulm/source/repos/hdf5-1.12.0/out/install/x64-Release",
+          "type": "PATH"
+        },
+        {
+          "name": "ZLIB_ROOT",
+          "value": "C:/Users/kittisopikulm/source/repos/zlib-1.2.11/out/install/x64-Release",
+          "type": "PATH"
+        },
+        {
+          "name": "LZ4_ROOT",
+          "value": "C:/Users/kittisopikulm/source/repos/lz4/build/cmake/out/install/x64-Release",
+          "type": "PATH"
+        },
+        {
+          "name": "LZ4_LIBRARIES",
+          "value": "C:/Users/kittisopikulm/source/repos/lz4/build/cmake/out/install/x64-Release/lib/lz4.lib",
+          "type": "FILEPATH"
+        }
+      ]
+    }
+  ]
+}
