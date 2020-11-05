@@ -3,3 +3,4 @@ build/
 release/
 debug/
 .vs/
+CMakeSettings.json
