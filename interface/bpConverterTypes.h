@@ -268,6 +268,7 @@ namespace bpConverterTypes
     bool mEnableLogProgress = false;
     bpSize mNumberOfThreads = 8;
     tCompressionAlgorithmType mCompressionAlgorithmType = eCompressionAlgorithmGzipLevel2;
+    bool mDisablePyramid = false;
   };
 
   using tProgressCallback = std::function<void(bpFloat aProgress, bpUInt64 aTotalBytesWritten)>;

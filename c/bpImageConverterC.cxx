@@ -343,6 +343,7 @@ static bpConverterTypes::cOptions Convert(bpConverterTypesC_OptionsPtr aOptions)
   vOptions.mEnableLogProgress = aOptions->mEnableLogProgress;
   vOptions.mNumberOfThreads = aOptions->mNumberOfThreads;
   vOptions.mCompressionAlgorithmType = (bpConverterTypes::tCompressionAlgorithmType)aOptions->mCompressionAlgorithmType;
+  vOptions.mDisablePyramid = aOptions->mDisablePyramid;
   return vOptions;
 }
 

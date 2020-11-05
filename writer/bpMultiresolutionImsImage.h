@@ -39,7 +39,7 @@ public:
     const bpVec2& aCopyBlockSizeXY, const bpVec2& aSampleXY,
     const bpSharedPtr<bpWriterFactory>& aWriterFactory,
     const bpString& aOutputFile, bpConverterTypes::tCompressionAlgorithmType aCompressionAlgorithmType,
-    bpSize aThumbnailSizeXY, bool aForceFileBlockSizeZ1, bpSize aNumberOfThreads);
+    bpSize aThumbnailSizeXY, bool aForceFileBlockSizeZ1, bpSize aNumberOfThreads, bool aDisablePyramid);
 
   bpMultiresolutionImsImage(const bpMultiresolutionImsImage&) = delete;
   bpMultiresolutionImsImage& operator=(const bpMultiresolutionImsImage&) = delete;

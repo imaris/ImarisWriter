@@ -131,6 +131,7 @@ typedef struct
   bool mEnableLogProgress; // false
   unsigned int mNumberOfThreads; // 8
   tCompressionAlgorithmType mCompressionAlgorithmType; // eCompressionAlgorithmGzipLevel2
+  bool mDisablePyramid; // false
 } bpConverterTypesC_Options;
 
 typedef const bpConverterTypesC_Options* bpConverterTypesC_OptionsPtr;

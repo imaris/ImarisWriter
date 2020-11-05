@@ -36,7 +36,7 @@ bpImageConverterImpl<TDataType>::bpImageConverterImpl(
     Div(aImageSize[C], aSample[C]), Div(aImageSize[T], aSample[T]), aDataType,
     { aFileBlockSize[X], aFileBlockSize[Y] }, { aSample[X], aSample[Y] },
     std::make_shared<bpWriterFactoryCompressor>(std::make_shared<bpWriterFactoryHDF5>(), aOptions.mNumberOfThreads, aOptions.mEnableLogProgress ? std::move(aProgressCallback) : tProgressCallback()),
-    aOutputFile, aOptions.mCompressionAlgorithmType, aOptions.mThumbnailSizeXY, aOptions.mForceFileBlockSizeZ1, aOptions.mNumberOfThreads)
+    aOutputFile, aOptions.mCompressionAlgorithmType, aOptions.mThumbnailSizeXY, aOptions.mForceFileBlockSizeZ1, aOptions.mNumberOfThreads, aOptions.mDisablePyramid)
 {
   mIsFlipped[0] = aOptions.mFlipDimensionXYZ[0];
   mIsFlipped[1] = aOptions.mFlipDimensionXYZ[1];

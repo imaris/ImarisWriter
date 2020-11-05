@@ -33,13 +33,18 @@ bpMultiresolutionImsImage<TDataType>::bpMultiresolutionImsImage(
   const bpVec2& aCopyBlockSizeXY, const bpVec2& aSampleXY,
   const bpSharedPtr<bpWriterFactory>& aWriterFactory,
   const bpString& aOutputFile, bpConverterTypes::tCompressionAlgorithmType aCompressionAlgorithmType,
-  bpSize aThumbnailSizeXY, bool aForceFileBlockSizeZ1, bpSize aNumberOfThreads)
+  bpSize aThumbnailSizeXY, bool aForceFileBlockSizeZ1, bpSize aNumberOfThreads, bool aDisablePyramid)
 : mMaxRunningJobsPerThread(32),
   mCopyBlockSizeXY(aCopyBlockSizeXY),
   mSampleXY(aSampleXY)
 {
   bool vReduceZ = !aForceFileBlockSizeZ1;
-  std::vector<bpVec3> vResolutionSizes = GetOptimalImagePyramid(bpVec3{ aSizeX, aSizeY, aSizeZ }, vReduceZ);
+  std::vector<bpVec3> vResolutionSizes;
+  if (aDisablePyramid)
+      vResolutionSizes = { bpVec3{ aSizeX, aSizeY, aSizeZ } };
+  else
+      vResolutionSizes = GetOptimalImagePyramid(bpVec3{ aSizeX, aSizeY, aSizeZ }, vReduceZ);
+
   std::vector<bpVec3> vResolutionBlockSizes = ComputeMemoryBlockSizes(vResolutionSizes, aSizeT);
 
   if (aForceFileBlockSizeZ1) {
