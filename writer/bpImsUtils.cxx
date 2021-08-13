@@ -27,13 +27,14 @@ bpString bpImsUtils::TimeInfoToString(const bpConverterTypes::cTimeInfo& aTimeIn
   bpInt32 vHour = GetHour(aTimeInfo.mNanosecondsOfDay);
   bpInt32 vMinute = GetMinute(aTimeInfo.mNanosecondsOfDay);
   bpInt32 vSecond = GetSecond(aTimeInfo.mNanosecondsOfDay);
-  return DateTimeToString(vYear, vMonth, vDay, vHour, vMinute, vSecond);
+  bpInt32 vMillisecond = GetMillisecond(aTimeInfo.mNanosecondsOfDay);
+  return DateTimeToString(vYear, vMonth, vDay, vHour, vMinute, vSecond, vMillisecond);
 }
 
 
-bpString bpImsUtils::DateTimeToString(bpInt32 aYear, bpInt32 aMonth, bpInt32 aDay, bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond)
+bpString bpImsUtils::DateTimeToString(bpInt32 aYear, bpInt32 aMonth, bpInt32 aDay, bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond, bpInt32 aMillisecond)
 {
-  return DateToString(aYear, aMonth, aDay) + " " + TimeToString(aHour, aMinute, aSecond);
+  return DateToString(aYear, aMonth, aDay) + " " + TimeToString(aHour, aMinute, aSecond, aMillisecond);
 }
 
 
@@ -106,13 +107,16 @@ bpInt32 bpImsUtils::GetSecond(bpInt64 aNanosecondsOfDay)
 bpInt32 bpImsUtils::GetMillisecond(bpInt64 aNanosecondsOfDay)
 {
   bpInt64 vMsec = (aNanosecondsOfDay / (1000 * 1000)) % 1000;
-  return static_cast<bpInt32>(vMsec, 3);
+  return static_cast<bpInt32>(vMsec);
 }
 
 
-bpString bpImsUtils::TimeToString(bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond)
+bpString bpImsUtils::TimeToString(bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond, bpInt32 aMillisecond)
 {
   bpString vTime = ToString(aHour) + ":" + ToString(aMinute) + ":" + ToString(aSecond);
+  if (aMillisecond > 0) {
+    vTime += "." + ToString(aMillisecond, 3);
+  }
   return vTime;
 }
 

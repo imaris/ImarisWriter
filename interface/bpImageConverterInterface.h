@@ -44,7 +44,7 @@ public:
 
   /**
   * When ImageConverter sampling in the constructor is set up to subsample the image it is possible that some input
-  * blocks are not needed. NeedCopyBlock allows to querry whether the "current block is needed.
+  * blocks are not needed. NeedCopyBlock allows to query whether the "current block" is needed.
   * The code if (NeedCopyBlock()) {CopyBlock(aData);}; correctly advances the internal data position in the same way as
   * a call to CopyBlock(aData) does.
   */

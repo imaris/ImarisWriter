@@ -17,18 +17,23 @@
 #define __BP_WRITER_DUMMY__
 
 
-#include "bpWriter.h"
+#include "bpMemoryBlock.h"
+#include "bpHistogram.h"
+#include "bpThumbnail.h"
 
+#include <functional>
 
 class bpWriterDummy : public bpWriter
 {
 public:
+  using tPreFunction = std::function<void()>;
+
   bpWriterDummy()
   {}
 
   virtual ~bpWriterDummy() = default;
 
-  virtual void WriteHistogram(const bpHistogram& aHistogram, bpSize aIndexT, bpSize aIndexC, bpSize aIndexR) {}
+  virtual void WriteHistogram(const bpHistogram& aHistogram, bpSize aIndexT, bpSize aIndexC, bpSize aIndexR) {};
 
   virtual void WriteMetadata(
     const bpString& aApplicationName,
@@ -36,19 +41,20 @@ public:
     const bpConverterTypes::cImageExtent& aImageExtent,
     const bpConverterTypes::tParameters& aParameters,
     const bpConverterTypes::tTimeInfoVector& aTimeInfoPerTimePoint,
-    const bpConverterTypes::tColorInfoVector& aColorInfoPerChannel) {}
+    const bpConverterTypes::tColorInfoVector& aColorInfoPerChannel) {};
 
-  virtual void WriteThumbnail(const bpThumbnail& aThumbnail) {}
+  virtual void WriteThumbnail(const bpThumbnail& aThumbnail) {};
 
   virtual void WriteDataBlock(
     const void* aData, bpSize aDataSize,
     bpSize aBlockIndexX, bpSize aBlockIndexY, bpSize aBlockIndexZ,
     bpSize aIndexT, bpSize aIndexC, bpSize aIndexR) {
     // do some fast dummy operation with the data
-    *mDummy = ((const bpUInt8*)aData)[aDataSize / 2];
-  }
+    bpUInt8 vHash = ((bpUInt8*)aData)[aDataSize / 2];
+    if (vHash > 0) { // pretend to use local variable
+    }
+  };
 
-  bpUniquePtr<bpUInt8> mDummy{ std::make_unique<bpUInt8>() };
 };
 
 

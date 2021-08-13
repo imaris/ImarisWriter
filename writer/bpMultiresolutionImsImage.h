@@ -23,6 +23,7 @@
 #include "bpThumbnailBuilder.h"
 
 #include <functional>
+#include <atomic>
 
 
 class bpThreadPool;
@@ -102,6 +103,8 @@ private:
 
   bpSharedPtr<bpThreadPool> mComputeThread;
   std::vector<bpSharedPtr<bpThreadPool>> mHistogramThreads;
+
+  std::atomic_size_t mResampleCount;
 
   bpSize mMaxRunningJobsPerThread;
 };

@@ -33,13 +33,16 @@ public:
   {
     if (!mCompressionAlgorithm) {
       bpThreadPool::tCallback vReturnMemory = WaitReserveMemory(aData.GetSize());
-      bpThreadPool::tFunction vWrite = [aData, vOriginalWrite = std::move(aWrite), vPreFunction = std::move(aPreFunction)]{
+      bpThreadPool::tFunction vWrite = [aData, vOriginalWrite = std::move(aWrite)]{
+        vOriginalWrite(aData.GetData(), aData.GetSize());
+      };
+      bpThreadPool::tFunction vFunction = [this, vDoWrite = std::move(vWrite), vDoReturnMemory = std::move(vReturnMemory), vPreFunction = std::move(aPreFunction)]() mutable {
         if (vPreFunction) {
           vPreFunction();
         }
-        vOriginalWrite(aData.GetData(), aData.GetSize());
+        mWriterThread.Run(vDoWrite, vDoReturnMemory);
       };
-      mWriterThread.Run(std::move(vWrite), std::move(vReturnMemory));
+      mCompressionThreads.Run(std::move(vFunction));
       return;
     }
 

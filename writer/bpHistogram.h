@@ -77,38 +77,25 @@ static inline void bpMergeBins(std::vector<bpUInt64>& aBins, const std::vector<b
 }
 
 
-template<typename T>
-class bpHistogramBuilder
+class bpHistogramBuilderAdaptive
 {
 public:
-  bpHistogram GetHistogram() const
-  {
-    bpUInt16 vMin = 0;
-    bpUInt16 vMax = mBins.size() - 1;
-    for (; vMin + 256 < vMax && mBins[vMax] == 0; --vMax);
-    for (; vMin + 256 < vMax && mBins[vMin] == 0; ++vMin);
-    std::vector<bpUInt64> vBins(mBins.begin() + vMin, mBins.begin() + (vMax + 1));
-    bpFloat vValueMin = mMin + (mMax - mMin) * vMin / (mBins.size() - 1);
-    bpFloat vValueMax = mMin + (mMax - mMin) * vMax / (mBins.size() - 1);
-    return bpHistogram(vValueMin, vValueMax, std::move(vBins));
-  }
+  bpHistogramBuilderAdaptive();
+  ~bpHistogramBuilderAdaptive();
 
-  void AddValue(T aValue)
-  {
-    bpFloat vValue = static_cast<bpFloat>(aValue);
-    bpSize vBin = vValue <= mMin ? 0 : vValue >= mMax ? mBins.size() - 1 : static_cast<bpSize>((vValue - mMin) * mBins.size() / (mMax - mMin));
-    ++mBins[vBin];
-  }
-
-  void Merge(const bpHistogramBuilder& aOther)
-  {
-    bpMergeBins(mBins, aOther.mBins);
-  }
+  bpHistogram GetHistogram() const;
+  void AddValue(bpFloat aValue);
+  void Merge(const bpHistogramBuilderAdaptive& aOther);
 
 private:
-  bpFloat mMin = -100;
-  bpFloat mMax = 40000;
-  std::vector<bpUInt64> mBins = std::vector<bpUInt64>(256 * 256);
+  class cImpl;
+  bpUniquePtr<cImpl> mImpl;
+};
+
+
+template<typename T>
+class bpHistogramBuilder : public bpHistogramBuilderAdaptive
+{
 };
 
 

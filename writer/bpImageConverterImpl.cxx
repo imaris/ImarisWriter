@@ -374,11 +374,11 @@ void bpImageConverterImpl<TDataType>::CopyFileBlockToImage(const tSize5D& aFileB
           vDataBlock = vBuffer;
         }
 
-        vImageIndex[2] = mIsFlipped[2] ? mImageSize[Z] - vImageIndex[2] - 1 : vImageIndex[2];
+        auto vImageIndexZ = mIsFlipped[2] ? mImageSize[Z] - vImageIndex[2] - 1 : vImageIndex[2];
 
         // The indices here are memoryIndices for each dim, not block indices!
         // T,C,Z are only one memoryIndex (for each dim), X,Y can contain span (vBegin, vEnd) over a range of memoryIndices (for each dim)
-        mMultiresolutionImage.CopyData(vImageIndex[4], vImageIndex[3], vImageIndex[2], { vFileBlockIndices[vDimX], vFileBlockIndices[vDimY] }, vDataBlock, 0);
+        mMultiresolutionImage.CopyData(vImageIndex[4], vImageIndex[3], vImageIndexZ, { vFileBlockIndices[vDimX], vFileBlockIndices[vDimY] }, vDataBlock, 0);
       }
     }
   }
