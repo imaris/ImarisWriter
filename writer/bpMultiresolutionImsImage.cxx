@@ -36,7 +36,8 @@ bpMultiresolutionImsImage<TDataType>::bpMultiresolutionImsImage(
   bpSize aThumbnailSizeXY, bool aForceFileBlockSizeZ1, bpSize aNumberOfThreads)
 : mMaxRunningJobsPerThread(32),
   mCopyBlockSizeXY(aCopyBlockSizeXY),
-  mSampleXY(aSampleXY)
+  mSampleXY(aSampleXY),
+  mResampleCount(0)
 {
   bool vReduceZ = !aForceFileBlockSizeZ1;
   std::vector<bpVec3> vResolutionSizes = GetOptimalImagePyramid(bpVec3{ aSizeX, aSizeY, aSizeZ }, vReduceZ);
@@ -98,6 +99,9 @@ template<typename TDataType>
 void bpMultiresolutionImsImage<TDataType>::FinishWriteDataBlocks()
 {
   mComputeThread->WaitAll();
+  while (mResampleCount > 0) {
+    mComputeThread->WaitAll();
+  }
   for (const auto& vThread : mHistogramThreads) {
     vThread->WaitAll();
   }
@@ -277,14 +281,17 @@ void bpMultiresolutionImsImage<TDataType>::InitCopyBlocksLeft(bpSize aIndexR)
 
   mCopyBlocksLeft[aIndexR].resize(vNMemoryBlocks[0] * vNMemoryBlocks[1] * vNMemoryBlocks[2] * vSizeC * vSizeT);
   for (bpSize vMemoryBlockIndexZ = 0; vMemoryBlockIndexZ < vNMemoryBlocks[2]; ++vMemoryBlockIndexZ) {
+    bpSize vCopyBlockIndexBeginZ = vMemoryBlockIndexZ * vMemoryBlockSize[2] / vCopyBlockSize[2];
+    bpSize vEndZ = std::min((vMemoryBlockIndexZ + 1) * vMemoryBlockSize[2], vImageSize[2]);
+    bpSize vCopyBlockIndexEndZ = std::min(DivEx(vEndZ, vCopyBlockSize[2]), vNCopyBlocks[2]);
     for (bpSize vMemoryBlockIndexY = 0; vMemoryBlockIndexY < vNMemoryBlocks[1]; ++vMemoryBlockIndexY) {
+      bpSize vCopyBlockIndexBeginY = vMemoryBlockIndexY * vMemoryBlockSize[1] * vSampleXY[1] / vCopyBlockSize[1];
+      bpSize vEndY = std::min((vMemoryBlockIndexY + 1) * vMemoryBlockSize[1], vImageSize[1]);
+      bpSize vCopyBlockIndexEndY = std::min(DivEx(vEndY * vSampleXY[1], vCopyBlockSize[1]), vNCopyBlocks[1]);
       for (bpSize vMemoryBlockIndexX = 0; vMemoryBlockIndexX < vNMemoryBlocks[0]; ++vMemoryBlockIndexX) {
         bpSize vCopyBlockIndexBeginX = vMemoryBlockIndexX * vMemoryBlockSize[0] * vSampleXY[0] / vCopyBlockSize[0];
-        bpSize vCopyBlockIndexBeginY = vMemoryBlockIndexY * vMemoryBlockSize[1] * vSampleXY[1] / vCopyBlockSize[1];
-        bpSize vCopyBlockIndexBeginZ = vMemoryBlockIndexZ * vMemoryBlockSize[2] / vCopyBlockSize[2];
-        bpSize vCopyBlockIndexEndX = std::min(DivEx((vMemoryBlockIndexX + 1) * vMemoryBlockSize[0] * vSampleXY[0], vCopyBlockSize[0]), vNCopyBlocks[0]);
-        bpSize vCopyBlockIndexEndY = std::min(DivEx((vMemoryBlockIndexY + 1) * vMemoryBlockSize[1] * vSampleXY[1], vCopyBlockSize[1]), vNCopyBlocks[1]);
-        bpSize vCopyBlockIndexEndZ = std::min(DivEx((vMemoryBlockIndexZ + 1) * vMemoryBlockSize[2], vCopyBlockSize[2]), vNCopyBlocks[2]);
+        bpSize vEndX = std::min((vMemoryBlockIndexX + 1) * vMemoryBlockSize[0], vImageSize[0]);
+        bpSize vCopyBlockIndexEndX = std::min(DivEx(vEndX * vSampleXY[0], vCopyBlockSize[0]), vNCopyBlocks[0]);
 
         bpSize vCopyBlockCount = (vCopyBlockIndexEndX - vCopyBlockIndexBeginX) * (vCopyBlockIndexEndY - vCopyBlockIndexBeginY) * (vCopyBlockIndexEndZ - vCopyBlockIndexBeginZ);
         for (bpSize vIndexT = 0; vIndexT < vSizeT; ++vIndexT) {
@@ -347,8 +354,8 @@ void bpMultiresolutionImsImage<TDataType>::OnCopiedDataImpl(bpSize aIndexT, bpSi
   bpSize vMemoryBlockIndexEndX = std::min(DivEx(vEndXY[0], vMemoryBlockSize[0]), vNMemoryBlocks[0]);
   bpSize vMemoryBlockIndexEndY = std::min(DivEx(vEndXY[1], vMemoryBlockSize[1]), vNMemoryBlocks[1]);
   bpSize vMemoryBlockIndexBegin = GetMemoryBlockIndex(0, 0, vMemoryBlockIndexZ, aIndexC, aIndexT, aIndexR);
-  for (bpSize vMemoryBlockIndexX = vMemoryBlockIndexBeginX; vMemoryBlockIndexX < vMemoryBlockIndexEndX; ++vMemoryBlockIndexX) {
-    for (bpSize vMemoryBlockIndexY = vMemoryBlockIndexBeginY; vMemoryBlockIndexY < vMemoryBlockIndexEndY; ++vMemoryBlockIndexY) {
+  for (bpSize vMemoryBlockIndexY = vMemoryBlockIndexBeginY; vMemoryBlockIndexY < vMemoryBlockIndexEndY; ++vMemoryBlockIndexY) {
+    for (bpSize vMemoryBlockIndexX = vMemoryBlockIndexBeginX; vMemoryBlockIndexX < vMemoryBlockIndexEndX; ++vMemoryBlockIndexX) {
       bpSize vMemoryBlockIndex = vMemoryBlockIndexBegin + vMemoryBlockIndexX + vMemoryBlockIndexY * vNMemoryBlocks[0];
       bpSize& vCopyBlocksLeft = mCopyBlocksLeft[aIndexR][vMemoryBlockIndex];
       --vCopyBlocksLeft;
@@ -363,8 +370,10 @@ void bpMultiresolutionImsImage<TDataType>::OnCopiedDataImpl(bpSize aIndexT, bpSi
         bpWriter::tPreFunction vResample;
         if (aIndexR + 1 < vResolutionLevels) {
           InitLowResBlock(vHigherResBlockIndex, aIndexR, aIndexT, aIndexC);
+          ++mResampleCount;
           vResample = [this, vHigherResBlockIndex, aIndexR, aIndexT, aIndexC, vData] {
             ResampleBlock(vHigherResBlockIndex, aIndexR, aIndexT, aIndexC, vData);
+            --mResampleCount;
           };
         }
 
@@ -414,7 +423,7 @@ void bpMultiresolutionImsImage<TDataType>::InitLowResBlock(const bpVec3& aHigher
   bpVec3 aLargeIndexMax;
   for (bpSize vDim = 0; vDim < 3; vDim++) {
     aLargeIndexMin[vDim] = aHigherResBlockIndex[vDim] * vMemoryBlockSize[vDim];
-    aLargeIndexMax[vDim] = std::min((aHigherResBlockIndex[vDim] + 1) * vMemoryBlockSize[vDim], vHigherResImage.GetImageSize()[vDim]);
+    aLargeIndexMax[vDim] = std::min((aHigherResBlockIndex[vDim] + 1) * vMemoryBlockSize[vDim], vLowerResImage.GetImageSize()[vDim] * vStride[vDim]);
   }
 
   if (aLargeIndexMin[0] >= aLargeIndexMax[0] || aLargeIndexMin[1] >= aLargeIndexMax[1] || aLargeIndexMin[2] >= aLargeIndexMax[2]) {
@@ -497,9 +506,10 @@ void bpMultiresolutionImsImage<TDataType>::ResampleBlockT(const bpVec3& aHigherR
   //minIndex is first voxel in block, maxIndex is last (+1) in block or last voxel (+1) of image
   bpVec3 aLargeIndexMin;
   bpVec3 aLargeIndexMax;
+  bpVec3 vStride{ StrideX, StrideY, StrideZ };
   for (bpSize vDim = 0; vDim < 3; vDim++) {
     aLargeIndexMin[vDim] = aHigherResBlockIndex[vDim] * vMemoryBlockSize[vDim];
-    aLargeIndexMax[vDim] = std::min((aHigherResBlockIndex[vDim] + 1) * vMemoryBlockSize[vDim], vHigherResImage.GetImageSize()[vDim]);
+    aLargeIndexMax[vDim] = std::min((aHigherResBlockIndex[vDim] + 1) * vMemoryBlockSize[vDim], vLowerResImage.GetImageSize()[vDim] * vStride[vDim]);
   }
 
   if (aLargeIndexMin[0] >= aLargeIndexMax[0] || aLargeIndexMin[1] >= aLargeIndexMax[1] || aLargeIndexMin[2] >= aLargeIndexMax[2]) {

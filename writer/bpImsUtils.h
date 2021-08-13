@@ -23,7 +23,7 @@ class bpImsUtils
 {
 public:
   static bpString TimeInfoToString(const bpConverterTypes::cTimeInfo& aTimeInfo);
-  static bpString DateTimeToString(bpInt32 aYear, bpInt32 aMonth, bpInt32 aDay, bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond);
+  static bpString DateTimeToString(bpInt32 aYear, bpInt32 aMonth, bpInt32 aDay, bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond, bpInt32 aMillisecond = 0);
 
   static bpString bpToString(bpUInt64 value);
 
@@ -31,7 +31,7 @@ private:
   static void FromJulianDay(bpInt32 aJulianDay, bpInt32& aYear, bpInt32& aMonth, bpInt32& aDay);
 
   static bpString DateToString(bpInt32 aYear, bpInt32 aMonth, bpInt32 aDay);
-  static bpString TimeToString(bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond);
+  static bpString TimeToString(bpInt32 aHour, bpInt32 aMinute, bpInt32 aSecond, bpInt32 aMillisecond);
 
   static bpString ToString(bpInt64 aValue, bpUInt16 aDecimals = 2, bool aLeadingZeros = true);
 

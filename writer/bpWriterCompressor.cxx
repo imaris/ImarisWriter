@@ -25,7 +25,7 @@ bpWriterCompressor::bpWriterCompressor(
   bpConverterTypes::tCompressionAlgorithmType aCompressionAlgorithmType,
   bpSize aNumberOfCompressionThreads,
   bpConverterTypes::tProgressCallback aProgressCallback)
-: mThreads(std::make_unique<bpWriterThreads>(aCompressionAlgorithmType > 0 ? aNumberOfCompressionThreads * 3 + 32 : 64, aNumberOfCompressionThreads, std::make_shared<bpCompressionAlgorithmFactory>(), aCompressionAlgorithmType, aImageLayout.GetDataType())),
+: mThreads(std::make_unique<bpWriterThreads>(aNumberOfCompressionThreads * 3 + 32, aNumberOfCompressionThreads, std::make_shared<bpCompressionAlgorithmFactory>(), aCompressionAlgorithmType, aImageLayout.GetDataType())),
   mCallbackThread(std::make_unique<bpThreadPool>(1)),
   mProgressCallback(std::move(aProgressCallback)),
   mNumberOfBlocks(0),

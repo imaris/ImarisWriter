@@ -17,6 +17,7 @@
 #define __BP_CONVERTER_TYPES__
 
 #include <exception>
+#include <stdexcept>
 #include <vector>
 #include <map>
 #include <memory>
