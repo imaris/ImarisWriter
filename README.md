@@ -7,7 +7,7 @@ For details refer to our publication: Beati, Igor, Eliana Andreica, and Peter Ma
 If ImarisWriter is useful for your work and if you want to help us continue our open source efforts please cite our publication in your work.
 
 ### Usage
-The ImarisWriter library has a C++ API and a C API. Using the C++ API pseudocode for writing a file mainly consists of a loop to copy all blocks to the library:
+The ImarisWriter library has a C++ API, a C API, and a Python API. Using the C++ API pseudocode for writing a file mainly consists of a loop to copy all blocks to the library:
 
 ```C++
 bpImageConverter<bpUInt16> vImageConverter(...);
