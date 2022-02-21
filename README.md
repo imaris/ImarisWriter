@@ -18,7 +18,7 @@ for ( all blocks ) {
 
 vImageConverter::Finish(vParameters, ...);
 ```
-A full usage example in C++ as well as a full example in C can be found here: https://github.com/imaris/ImarisWriterTest
+Full usage examples in C++, C, and Python can be found here: https://github.com/imaris/ImarisWriterTest
 
 ### Dependencies
 
