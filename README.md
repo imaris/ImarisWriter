@@ -1,6 +1,10 @@
 # ImarisWriter
 
-ImarisWriter is a high performance file writer for microscopy images. It creates image files suitable for high performance visualization and analysis in the [Imaris5 File Format](https://github.com/imaris/ImarisWriter/blob/master/doc/Imaris5FileFormat.pdf). The library facilitates writing of very large image data that exceed a computer’s RAM by “streaming” the data to the library in small blocks. The library is capable of writing data with high speed. The library takes care of all the details of multi-resolution resampling, chunking, compression, multi-threading, etc and delivers its functionality to the user in a simple to use way.
+ImarisWriter is a high performance file writer for microscopy images. It creates image files suitable for high performance visualization and analysis in the [Imaris5 File Format](https://github.com/imaris/ImarisWriter/blob/master/doc/Imaris5FileFormat.pdf). The library facilitates writing of very large image data that exceed a computer’s RAM by “streaming” the data to the library in small blocks. It is capable of writing data with high speed. And it takes care of all the details of multi-resolution resampling, chunking, compression, multi-threading, etc., and delivers its functionality to the user in a simple to use way.
+
+For details refer to our publication: Beati, Igor, Eliana Andreica, and Peter Majer. "ImarisWriter: open source software for storage of large images in blockwise multi-resolution format." arXiv preprint [arXiv:2008.10311](https://arxiv.org/abs/2008.10311) (2020).
+
+If ImarisWriter is useful for your work and if you want to help us continue our open source efforts please cite our publication in your work.
 
 ### Usage
 The ImarisWriter library has a C++ API and a C API. Using the C++ API pseudocode for writing a file mainly consists of a loop to copy all blocks to the library:
