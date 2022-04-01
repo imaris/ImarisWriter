@@ -581,4 +581,3 @@ class ImageConverter(PyClassnameExceptionRaiser):
 
     def Destroy(self) -> None:
         self.mcdll.bpImageConverterC_Destroy(self.mImageConverterPtr)
-        self._check_errors('bpImageConverterC_Destroy')
