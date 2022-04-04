@@ -290,7 +290,7 @@ class Parameters:
         for section_index, key in enumerate(self.mSections):
             items = self.mSections[key]
             parameter_section_data[section_index] = self.create_parameter_section(key, items)
-        c_parameters = bpConverterTypesC_Parameters(parameter_section_data, number_of_sections)
+        c_parameters = bpConverterTypesC_ParametersPtr(bpConverterTypesC_Parameters(parameter_section_data, number_of_sections))
         return c_parameters
     
 
