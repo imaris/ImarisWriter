@@ -290,7 +290,7 @@ class Parameters:
         for section_index, key in enumerate(self.mSections):
             items = self.mSections[key]
             parameter_section_data[section_index] = self.create_parameter_section(key, items)
-        c_parameters = bpConverterTypesC_Parameters(parameter_section_data, number_of_sections)
+        c_parameters = bpConverterTypesC_ParametersPtr(bpConverterTypesC_Parameters(parameter_section_data, number_of_sections))
         return c_parameters
     
 
@@ -417,7 +417,7 @@ class ImageConverter(PyClassnameExceptionRaiser):
         if not isinstance(dimension_sequence, DimensionSequence):
             self.raise_creating_clex('Invalid dimension_sequence: {}'.format(dimension_sequence))
         sequence = [dimension_dict[i] for i in dimension_sequence.get_sequence()]
-        self.mDimensionSequence = bpConverterTypesC_DimensionSequence5D(*sequence)
+        self.mDimensionSequence = bpConverterTypesC_DimensionSequence5DPtr(bpConverterTypesC_DimensionSequence5D(*sequence))
         
     def _store_block_size(self, block_size):
         if not isinstance(block_size, ImageSize):
@@ -545,7 +545,8 @@ class ImageConverter(PyClassnameExceptionRaiser):
 
     def NeedCopyBlock(self, block_index : ImageSize) -> bool:
         c_block_index = bpConverterTypesC_Index5D(block_index.x, block_index.y, block_index.z, block_index.c, block_index.t, )
-        return_value = self.mcdll.bpImageConverterC_NeedCopyBlock(self.mImageConverterPtr, c_block_index)
+        block_index_ptr = bpConverterTypesC_Index5DPtr(c_block_index)
+        return_value = self.mcdll.bpImageConverterC_NeedCopyBlock(self.mImageConverterPtr, block_index_ptr)
         need_copy = return_value == 1
         #print('NeedCopyBlock {} ? {}'.format(block_index, "yes" if return_value else "no"))
         return need_copy
@@ -581,4 +582,3 @@ class ImageConverter(PyClassnameExceptionRaiser):
 
     def Destroy(self) -> None:
         self.mcdll.bpImageConverterC_Destroy(self.mImageConverterPtr)
-        self._check_errors('bpImageConverterC_Destroy')
